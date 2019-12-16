@@ -62,8 +62,8 @@ def handle_message(event):
         return 0
 
 def job():
-    #執行時間測試，確認時間有在執行
-    linenotify.lineNotifyMessage(token, msg='執行時間:' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    #執行時間測試，確認時間有在執行  若想確認是否有跑排程    打開以下註記
+    #linenotify.lineNotifyMessage(token, msg='執行時間:' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     data = mongodb.show_user_stock_fountion()
     for i in data:
         stock = i['stock']
@@ -87,7 +87,7 @@ def job():
             linenotify.lineNotifyMessage(token, msg='抓取有問題異常')
 
 
-# 判斷一到五  台股開放時間範圍時間 開放時間早上九點-下午一點
+# 判斷一到五  台股開放時間範圍時間 開放時間早上九點-下午一點半
 start_time = datetime.datetime.strptime(str(datetime.datetime.now().date()) + '9:00', '%Y-%m-%d%H:%M')
 end_time = datetime.datetime.strptime(str(datetime.datetime.now().date()) + '13:30', '%Y-%m-%d%H:%M')
 now_time = datetime.datetime.now()

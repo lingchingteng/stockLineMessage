@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from pymongo import MongoClient
-import urllib.parse
 import datetime
 
-Authdb = 'mydb'
+from pymongo import MongoClient
+
+Authdb = "mydb"
 
 
 def constructor():
@@ -12,31 +12,31 @@ def constructor():
     return db
 
 
-# ----------------------------Àx¦s¨Ï¥ÎªÌªºªÑ²¼--------------------------
+# ----------------------------å„²å­˜ä½¿ç”¨è€…çš„è‚¡ç¥¨--------------------------
 def write_user_stock_fountion(stock, bs, price):
     db = constructor()
-    collect = db['mystock']
-    collect.insert({"stock": stock,
-                    "data": 'care_stock',
-                    "bs": bs,
-                    "price": float(price),
-                    "date_info": datetime.datetime.utcnow()
-                    })
+    collect = db["mystock"]
+    collect.insert(
+        {
+            "stock": stock,
+            "data": "care_stock",
+            "bs": bs,
+            "price": float(price),
+            "date_info": datetime.datetime.utcnow(),
+        }
+    )
 
 
-# ----------------------------±þ±¼¨Ï¥ÎªÌªºªÑ²¼--------------------------
+# ----------------------------æ®ºæŽ‰ä½¿ç”¨è€…çš„è‚¡ç¥¨--------------------------
 def delete_user_stock_fountion(stock):
     db = constructor()
-    collect = db['mystock']
+    collect = db["mystock"]
     collect.remove({"stock": stock})
 
 
-# ----------------------------¨q¥X¨Ï¥ÎªÌªºªÑ²¼--------------------------
+# ----------------------------ç§€å‡ºä½¿ç”¨è€…çš„è‚¡ç¥¨--------------------------
 def show_user_stock_fountion():
     db = constructor()
-    collect = db['mystock']
-    cel = list(collect.find({"data": 'care_stock'}))
+    collect = db["mystock"]
+    cel = list(collect.find({"data": "care_stock"}))
     return cel
-
-
-

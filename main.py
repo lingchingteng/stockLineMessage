@@ -1,65 +1,78 @@
 from __future__ import print_function
-import time
-import schedule
-import urllib.parse
+
 import datetime
+import time
+
 import requests
+import schedule
 from bs4 import BeautifulSoup
-import mongodb
+
 import linenotify
+
+# import mongodb
+
 
 def lineNotifyMessage(token, msg):
     headers = {
         "Authorization": "Bearer " + token,
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded",
     }
-    payload = {'message': msg}
-    r = requests.post("https://notify-api.line.me/api/notify", headers=headers, params=payload)
+    payload = {"message": msg}
+    r = requests.post(
+        "https://notify-api.line.me/api/notify", headers=headers, params=payload
+    )
     return r.status_code
 
 
-# ­×§ï¬°§AªºÅv§ú¤º®e
-token = ''
-startmsg = 'ªÑ»ù°_©l°õ¦æ®É¶¡:' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+# ä¿®æ”¹ç‚ºä½ çš„æ¬Šæ–å…§å®¹
+token = ""
+startmsg = "è‚¡åƒ¹èµ·å§‹åŸ·è¡Œæ™‚é–“:" + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 linenotify.lineNotifyMessage(token, msg=startmsg)
 
 
 def job():
-    # °õ¦æ®É¶¡´ú¸Õ¡A½T»{®É¶¡¦³¦b°õ¦æ  ­Y·Q½T»{¬O§_¦³¶]±Æµ{    ¥´¶}¥H¤Uµù°O
-    # linenotify.lineNotifyMessage(token, msg='°õ¦æ®É¶¡:' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    data = mongodb.show_user_stock_fountion()
+    # åŸ·è¡Œæ™‚é–“æ¸¬è©¦ï¼Œç¢ºèªæ™‚é–“æœ‰åœ¨åŸ·è¡Œ  è‹¥æƒ³ç¢ºèªæ˜¯å¦æœ‰è·‘æ’ç¨‹    æ‰“é–‹ä»¥ä¸‹è¨»è¨˜
+    # linenotify.lineNotifyMessage(
+    #     token, msg="åŸ·è¡Œæ™‚é–“:" + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # )
+    # data = mongodb.show_user_stock_fountion()
+    data = [{"stock": "2330", "bs": "<", "price": 700}]
     for i in data:
-        stock = i['stock']
-        bs = i['bs']
-        price = i['price']
-        url = 'https://tw.stock.yahoo.com/q/q?s=' + stock
+        stock = i["stock"]
+        bs = i["bs"]
+        price = i["price"]
+        url = "https://tw.stock.yahoo.com/q/q?s=" + stock
         list_req = requests.get(url)
         soup = BeautifulSoup(list_req.content, "html.parser")
-        getstock = soup.findAll('b')[1].text  # ¸Ì­±©Ò¦³¤å¦r¤º®e
+        getstock = soup.findAll("b")[1].text  # è£¡é¢æ‰€æœ‰æ–‡å­—å…§å®¹
         if float(getstock):
-            if bs == '<':
+            if bs == "<":
                 if float(getstock) < price:
-                    get = stock + '(¥i¶R¶i)ªº»ù®æ¡G' + getstock
+                    get = stock + "(å¯è²·é€²)çš„åƒ¹æ ¼ï¼š" + getstock
                     linenotify.lineNotifyMessage(token, get)
 
             else:
                 if float(getstock) > price:
-                    get = stock + '(¥i½æ¥X)ªº»ù®æ¡G' + getstock
+                    get = stock + "(å¯è³£å‡º)çš„åƒ¹æ ¼ï¼š" + getstock
                     linenotify.lineNotifyMessage(token, get)
         else:
-            linenotify.lineNotifyMessage(token, msg='§ì¨ú¦³°İÃD²§±`')
+            linenotify.lineNotifyMessage(token, msg="æŠ“å–æœ‰å•é¡Œç•°å¸¸")
 
 
-# §PÂ_¤@¨ì¤­  ¥xªÑ¶}©ñ®É¶¡½d³ò®É¶¡ ¶}©ñ®É¶¡¦­¤W¤EÂI-¤U¤È¤@ÂI¥b
-start_time = datetime.datetime.strptime(str(datetime.datetime.now().date()) + '9:00', '%Y-%m-%d%H:%M')
-end_time = datetime.datetime.strptime(str(datetime.datetime.now().date()) + '13:30', '%Y-%m-%d%H:%M')
+# åˆ¤æ–·ä¸€åˆ°äº”  å°è‚¡é–‹æ”¾æ™‚é–“ç¯„åœæ™‚é–“ é–‹æ”¾æ™‚é–“æ—©ä¸Šä¹é»-ä¸‹åˆä¸€é»åŠ
+start_time = datetime.datetime.strptime(
+    str(datetime.datetime.now().date()) + "9:00", "%Y-%m-%d%H:%M"
+)
+end_time = datetime.datetime.strptime(
+    str(datetime.datetime.now().date()) + "13:30", "%Y-%m-%d%H:%M"
+)
 now_time = datetime.datetime.now()
 weekday = datetime.datetime.now().weekday()
-if weekday >= 0 and weekday <= 4:
-    if now_time > start_time and now_time < end_time:
+if True or weekday >= 0 and weekday <= 4:
+    if True or now_time > start_time and now_time < end_time:
         second_5_j = schedule.every(10).seconds.do(job)
 
-# µL½a°j°é
+# ç„¡çª®è¿´åœˆ
 while True:
     schedule.run_pending()
     time.sleep(1)
